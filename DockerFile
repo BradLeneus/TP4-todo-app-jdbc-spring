@@ -1,0 +1,29 @@
+# Utiliser une image de base pour le build Maven
+FROM maven:3.8.7-jdk-21 AS build
+
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+# Copy Maven wrapper and pom.xml first to leverage Docker cache
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+
+# Download dependencies (if they change less frequently than source code)
+RUN ./mvnw dependency:go-offline
+
+# Copy source code and build the application
+COPY src ./src
+RUN ./mvnw clean install -DskipTests
+
+# Final stage
+FROM eclipse-temurin:21-jre-jammy AS final
+WORKDIR /app
+
+# Copy the built JAR from the builder stage
+COPY --from=builder /app/target/*.jar /app/app.jar
+
+# Expose the application's port if it's a web application
+EXPOSE 8080
+
+# Command to run the application
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
