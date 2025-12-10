@@ -27,7 +27,7 @@ ENV DB_PORT=3306
 ENV DB_USER=root
 ENV DB_PASSWORD=password
 
-# Exposer le port de l'application
+# Exposer le port du backend
 EXPOSE 8080
 
 # Commande de démarrage
