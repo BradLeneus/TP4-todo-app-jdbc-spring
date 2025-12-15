@@ -1,5 +1,5 @@
 # Stage 1: Build avec Maven
-FROM maven:3.9.9-eclipse-temurin-17 AS build
+FROM maven:3.9.9-eclipse-temurin-23 AS build  
 WORKDIR /app
 
 # Copier uniquement le pom.xml du backend (dans src/api)
@@ -15,7 +15,7 @@ COPY src/api/src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Exécution finale
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:23-jre-alpine  
 WORKDIR /app
 
 # Copier le JAR compilé depuis l'étape de build
